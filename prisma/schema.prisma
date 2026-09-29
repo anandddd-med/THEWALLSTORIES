@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
@@ -28,15 +28,15 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  addresses     Address[]
-  orders        Order[]
-  cart          Cart?
-  wishlist      Wishlist?
-  reviews       Review[]
-  couponUsages  CouponUsage[]
-  notifications Notification[]
+  accounts             Account[]
+  sessions             Session[]
+  addresses            Address[]
+  orders               Order[]
+  cart                 Cart?
+  wishlist             Wishlist?
+  reviews              Review[]
+  couponUsages         CouponUsage[]
+  notifications        Notification[]
   customDesignRequests CustomDesignRequest[]
 
   @@index([email])
@@ -77,32 +77,20 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-/// Short-lived hashed OTP codes for phone-number sign-in.
-model PhoneOtp {
+model Address {
   id        String   @id @default(cuid())
+  userId    String?
+  name      String
   phone     String
-  codeHash  String
-  attempts  Int      @default(0)
-  expiresAt DateTime
+  line1     String
+  line2     String?
+  city      String
+  state     String
+  pincode   String
+  isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  @@index([phone])
-}
-
-model Address {
-  id         String   @id @default(cuid())
-  userId     String?
-  name       String
-  phone      String
-  line1      String
-  line2      String?
-  city       String
-  state      String
-  pincode    String
-  isDefault  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-
-  user   User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders Order[]
 
   @@index([userId])
@@ -139,10 +127,10 @@ model Product {
   tags        String[]      @default([])
   status      ProductStatus @default(ACTIVE)
 
-  featured    Boolean @default(false)
-  bestSeller  Boolean @default(false)
-  newArrival  Boolean @default(false)
-  limited     Boolean @default(false)
+  featured   Boolean @default(false)
+  bestSeller Boolean @default(false)
+  newArrival Boolean @default(false)
+  limited    Boolean @default(false)
 
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id])
@@ -202,10 +190,10 @@ model ProductVariant {
   material PosterMaterial @default(MATTE)
   frame    PosterFrame    @default(NONE)
 
-  sku            String  @unique
+  sku            String @unique
   price          Int
   compareAtPrice Int?
-  weightGrams    Int     @default(200)
+  weightGrams    Int    @default(200)
   widthMm        Int?
   heightMm       Int?
 
@@ -288,12 +276,12 @@ enum OrderStatus {
 }
 
 model Order {
-  id          String      @id @default(cuid())
-  orderNumber String      @unique
+  id          String   @id @default(cuid())
+  orderNumber String   @unique
   userId      String?
-  user        User?       @relation(fields: [userId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id])
   addressId   String?
-  address     Address?    @relation(fields: [addressId], references: [id])
+  address     Address? @relation(fields: [addressId], references: [id])
 
   email String
   phone String

@@ -32,16 +32,6 @@ function shell(title: string, bodyHtml: string) {
   </body></html>`;
 }
 
-export async function sendVerificationEmail(email: string, token: string) {
-  const link = `${SITE}/verify-email?token=${token}&email=${encodeURIComponent(email)}`;
-  return send(
-    email,
-    'Verify your VIBEWALLseyy account',
-    shell('Confirm your email', `<p>Click below to verify your account and start shopping.</p>
-      <p><a href="${link}" style="display:inline-block;background:#141414;color:#fff;padding:12px 24px;text-decoration:none;border-radius:4px;">Verify email</a></p>`)
-  );
-}
-
 export async function sendPasswordResetEmail(email: string, token: string) {
   const link = `${SITE}/reset-password?token=${token}&email=${encodeURIComponent(email)}`;
   return send(
